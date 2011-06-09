@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent" android:background="@drawable/background">
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="match_parent" android:layout_height="match_parent">
+
+		<TextView android:id="@+id/title_show" android:layout_width="wrap_content"
+			android:textSize="16px" android:textStyle="bold"
+			android:layout_height="wrap_content" android:layout_marginBottom="5px" />
+
+
+		<TextView android:id="@+id/genre" android:layout_width="wrap_content"
+			android:textStyle="italic" android:layout_height="wrap_content"
+			android:layout_marginBottom="5px" />
+
+		<ImageView android:layout_height="wrap_content" android:src="@drawable/movie"
+			android:layout_width="wrap_content" android:id="@+id/poster"
+			android:maxWidth="200px" android:maxHeight="400px"
+			android:adjustViewBounds="true" android:scaleType="fitCenter"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginBottom="5px" android:clickable="true"></ImageView>
+
+		<TextView android:id="@+id/synopsis" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginBottom="5px" />
+
+		<Button android:id="@+id/done" android:text="@string/done"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+	</LinearLayout>
+</ScrollView>
