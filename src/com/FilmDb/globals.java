@@ -7,7 +7,7 @@ package com.FilmDb;
 public class globals {
 
 
-	public static enum GenreEnum
+	private static enum GenreEnum
 	{
 		ALL,
 		ACTION,
@@ -21,8 +21,9 @@ public class globals {
 	public static final int ACTIVITY_CREATE=0;
 	public static final int ACTIVITY_SHOW=1;
 	public static final int ACTIVITY_TRAILER=2;
-	public static boolean sortTitle = true;
-	public static GenreEnum currentGenre = GenreEnum.ALL;
+	private static boolean sortTitle = true;
+	private static boolean swipeLeft = true;
+	private static GenreEnum currentGenre = GenreEnum.ALL;
 	private static globals instance;
 
 	static {
@@ -45,9 +46,15 @@ public class globals {
 	{
 		sortTitle = !sortTitle;
 	}
+	
+	public static boolean getSwipeLeft()
+	{
+		return swipeLeft;
+	}
 
 	public static GenreEnum nextGenre()
 	{
+		swipeLeft = true;
 		switch(currentGenre)
 		{
 		case ALL:
@@ -76,6 +83,7 @@ public class globals {
 	
 	public static GenreEnum previousGenre()
 	{
+		swipeLeft = false;
 		switch(currentGenre)
 		{
 		case ALL:
@@ -100,5 +108,26 @@ public class globals {
 			currentGenre = GenreEnum.ALL;
 		}
 		return currentGenre;
+	}
+	
+	public static String getCurrentGenre()
+	{
+		switch(currentGenre)
+		{
+		case ACTION:
+			return "Action";
+		case COMEDY:
+			return "Comedy";
+		case DRAMA:
+			return "Drama";
+		case ROMANCE:
+			return "Romance";
+		case HORROR:
+			return "Horror";
+		case THRILLER:
+			return "Thriller";
+		default:
+			return "";
+		}
 	}
 }

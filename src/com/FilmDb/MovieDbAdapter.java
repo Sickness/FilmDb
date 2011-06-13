@@ -135,7 +135,7 @@ public class MovieDbAdapter {
     		orderBy = KEY_TITLE;
     	else orderBy = KEY_YEAR;
 
-        return mDb.query(DATABASE_TABLE_MOVIES, new String[] {KEY_ROWID, KEY_TITLE, KEY_YEAR}, null, null, null, null, orderBy);
+    	return mDb.query(DATABASE_TABLE_MOVIES, new String[] {KEY_ROWID, KEY_TITLE, KEY_YEAR}, "genre LIKE " + "'%" + globals.getCurrentGenre() + "%'", null, null, null, orderBy);
     }
 
     /**

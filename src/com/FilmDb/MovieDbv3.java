@@ -16,29 +16,64 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.MotionEvent;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 
 public class MovieDbv3 extends ListActivity {
     private static final int INSERT_ID = Menu.FIRST;
     private static final int DELETE_ID = Menu.FIRST + 1;
     private static final int SORT_ID = Menu.FIRST + 2;
+    
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+	private GestureDetector gestureDetector;
+	View.OnTouchListener gestureListener;
+	private Animation slideLeftIn;
+	private Animation slideLeftOut;
+	private Animation slideRightIn;
+    private Animation slideRightOut;
+    private ViewFlipper viewFlipper;
 
     private MovieDbAdapter mDbHelper;
+    
+    private TextView CategoryText;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
+        super.onCreate(savedInstanceState);        
         GeneralSettings.setApiKey("33fc4693e8d0e1e72fc38c09cc0817d3");
         setContentView(R.layout.movie_list);
+        
+        CategoryText = (TextView)findViewById(R.id.category);
+        viewFlipper = (ViewFlipper)findViewById(R.id.flipper);
+        slideLeftIn = AnimationUtils.loadAnimation(this, R.anim.slide_left_in);
+        slideLeftOut = AnimationUtils.loadAnimation(this, R.anim.slide_left_out);
+        slideRightIn = AnimationUtils.loadAnimation(this, R.anim.slide_right_in);
+        slideRightOut = AnimationUtils.loadAnimation(this, R.anim.slide_right_out);
+        gestureDetector = new GestureDetector(new SwipeEventHandler());
+        gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (gestureDetector.onTouchEvent(event)) {
+                    return true;
+                }
+                return false;
+            }
+        };
         mDbHelper = new MovieDbAdapter(this);
         mDbHelper.open();
         fillData();
@@ -46,6 +81,10 @@ public class MovieDbv3 extends ListActivity {
     }
 
     private void fillData() {
+    	String category = globals.getCurrentGenre();
+    	if (category == "")
+    		category = "All";
+    	CategoryText.setText(category + " Movies");
         Cursor moviesCursor = mDbHelper.fetchAllMovies();
         startManagingCursor(moviesCursor);
 
@@ -60,7 +99,7 @@ public class MovieDbv3 extends ListActivity {
             new SimpleCursorAdapter(this, R.layout.movie_row, moviesCursor, from, to);
         setListAdapter(movies);
     }
-
+   
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -148,5 +187,40 @@ public class MovieDbv3 extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         fillData();
+    }
+    
+    class SwipeEventHandler extends SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false;
+                // right to left swipe
+                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                	viewFlipper.setInAnimation(slideLeftIn);
+                    viewFlipper.setOutAnimation(slideLeftOut);
+                	viewFlipper.showNext();
+                	globals.nextGenre();
+                	fillData();
+                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                	viewFlipper.setInAnimation(slideRightIn);
+                    viewFlipper.setOutAnimation(slideRightOut);
+                	viewFlipper.showPrevious();
+                	globals.previousGenre();
+                	fillData();
+                }
+            } catch (Exception e) {
+                // nothing
+            }
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (gestureDetector.onTouchEvent(event))
+	        return true;
+	    else
+	    	return false;
     }
 }
