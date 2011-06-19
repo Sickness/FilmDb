@@ -21,6 +21,10 @@ public class MovieDbAdapter {
     public static final String KEY_POSTER = "posterurl";
     public static final String KEY_TRAILER = "trailerurl";
     public static final String KEY_ROWID = "_id";
+    
+    private static final String DATABASE_NAME = "films.sqlite";
+    private static final String DATABASE_TABLE_MOVIES = "movies";
+    private static final int DATABASE_VERSION = 1;
 
     private static final String TAG = "MoviesDbAdapter";
     private DatabaseHelper mDbHelper;
@@ -30,12 +34,10 @@ public class MovieDbAdapter {
      * Database creation sql statement
      */
     private static final String DATABASE_CREATE_MOVIES =
-        "create table movies (_id integer primary key autoincrement, "
-        + "title text not null, year text, genre text, synopsis text, posterurl text, trailerurl text);";
-
-    private static final String DATABASE_NAME = "db.sqlite";
-    private static final String DATABASE_TABLE_MOVIES = "movies";
-    private static final int DATABASE_VERSION = 3;
+        "CREATE TABLE " + DATABASE_TABLE_MOVIES + " (" + KEY_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+        + KEY_TITLE + " TEXT NOT NULL, " + KEY_YEAR + " TEXT NOT NULL, "
+        + KEY_GENRE + " TEXT, " + KEY_SYNOPSIS + " TEXT, " 
+        + KEY_POSTER + " TEXT, " + KEY_TRAILER + " TEXT" + ");";
 
     private final Context mCtx;
 
@@ -55,7 +57,7 @@ public class MovieDbAdapter {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS movies");
+            db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_MOVIES);
             onCreate(db);
         }
     }
@@ -170,7 +172,7 @@ public class MovieDbAdapter {
 
         Cursor mCursor =
 
-            mDb.rawQuery("select _id FROM " + DATABASE_TABLE_MOVIES + " WHERE title=\"" + title + "\"", null);
+            mDb.rawQuery("select _id FROM " + DATABASE_TABLE_MOVIES + " WHERE " + KEY_TITLE + "=\"" + title + "\"", null);
         boolean exists = (mCursor.getCount() > 0);
         mCursor.close();
         return exists;
