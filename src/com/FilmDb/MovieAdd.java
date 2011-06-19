@@ -133,6 +133,8 @@ public class MovieAdd extends ListActivity {
 					posterurl = iter.next().getLargestImage().toString();
 				}
 
+				// TODO add null checks on all parameters here, might be causing problems when adding a new movie
+				// TODO add local parameters for getOverview and getTrailer, these can still be NULL
 				mDbHelper.createMovie(movie.getName(), Integer.toString(movie
 						.getReleasedDate().getYear() + 1900), genreString,
 						movie.getOverview(), posterurl, movie.getTrailer()
