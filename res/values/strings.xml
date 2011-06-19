@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FilmDb v3</string>
+    <string name="app_name">FilmDb v0.1</string>
     <string name="no_movies">No Movies Yet</string>
     <string name="menu_insert">Add Movie</string>
     <string name="menu_delete">Delete Movie</string>

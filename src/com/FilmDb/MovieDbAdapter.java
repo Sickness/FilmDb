@@ -31,11 +31,11 @@ public class MovieDbAdapter {
      */
     private static final String DATABASE_CREATE_MOVIES =
         "create table movies (_id integer primary key autoincrement, "
-        + "title text not null, year text not null, genre text not null, synopsis text not null, posterurl text not null, trailerurl text not null);";
+        + "title text not null, year text, genre text, synopsis text, posterurl text, trailerurl text);";
 
-    private static final String DATABASE_NAME = "Film";
+    private static final String DATABASE_NAME = "db.sqlite";
     private static final String DATABASE_TABLE_MOVIES = "movies";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private final Context mCtx;
 
@@ -101,7 +101,7 @@ public class MovieDbAdapter {
      * @return rowId or -1 if failed
      */
     public long createMovie(String title, String year, String genre, String synopsis, String posterurl, String trailerurl) {
-        ContentValues initialValues = new ContentValues();
+        ContentValues initialValues = new ContentValues();       
         initialValues.put(KEY_TITLE, title);
         initialValues.put(KEY_YEAR, year);
         initialValues.put(KEY_GENRE, genre);
@@ -122,6 +122,7 @@ public class MovieDbAdapter {
 
         return mDb.delete(DATABASE_TABLE_MOVIES, KEY_ROWID + "=" + rowId, null) > 0;
     }
+
 
     /**
      * Return a Cursor over the list of all movies in the database
@@ -156,6 +157,23 @@ public class MovieDbAdapter {
             mCursor.moveToFirst();
         }
         return mCursor;
+
+    }
+    
+    /**
+     * Checks if the movie already exists
+     * 
+     * @param movie ID
+     * @return boolean
+     */
+    public boolean movieExists(String title) {
+
+        Cursor mCursor =
+
+            mDb.rawQuery("select _id FROM " + DATABASE_TABLE_MOVIES + " WHERE title=\"" + title + "\"", null);
+        boolean exists = (mCursor.getCount() > 0);
+        mCursor.close();
+        return exists;
 
     }
 }

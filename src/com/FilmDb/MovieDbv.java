@@ -32,7 +32,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 
-public class MovieDbv3 extends ListActivity {
+public class MovieDbv extends ListActivity {
     private static final int INSERT_ID = Menu.FIRST;
     private static final int DELETE_ID = Menu.FIRST + 1;
     private static final int SORT_ID = Menu.FIRST + 2;
@@ -157,7 +157,7 @@ public class MovieDbv3 extends ListActivity {
     			if(input.getText().length() != 0)
     			{
     				String value = input.getText().toString();
-    				Intent i = new Intent(MovieDbv3.this, MovieAdd.class);
+    				Intent i = new Intent(MovieDbv.this, MovieAdd.class);
     				Bundle b = new Bundle();
     				b.putString("MovieTitle", value);
     				i.putExtras(b);
