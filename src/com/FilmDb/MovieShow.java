@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MovieShow extends Activity {
 
@@ -33,6 +34,7 @@ public class MovieShow extends Activity {
     private Long mRowId;
     private MovieDbAdapter mDbHelper;
     private Cursor movie;
+    private static final String TAG = "MovieShow";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +145,11 @@ public class MovieShow extends Activity {
     private View.OnClickListener imageviewClicker = new View.OnClickListener()
     {
     	 public void onClick(View v) {
-    	        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(movie.getString(
-             movie.getColumnIndexOrThrow(MovieDbAdapter.KEY_TRAILER)))));
+    		 String trailer =  movie.getString(
+    	             movie.getColumnIndexOrThrow(MovieDbAdapter.KEY_TRAILER));
+    		 if(trailer != null)
+    	        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailer)));
+    		 else Toast.makeText(MovieShow.this, "No trailer available", Toast.LENGTH_SHORT).show();
     	 }
     };
 }

@@ -16,6 +16,7 @@ import net.sf.jtmdb.Genre;
 import net.sf.jtmdb.Movie;
 import net.sf.jtmdb.MoviePoster;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -82,7 +83,6 @@ public class MovieAdd extends ListActivity {
 				setListAdapter(adapter);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -119,13 +119,14 @@ public class MovieAdd extends ListActivity {
 	protected void saveMovieToDb(int iD) {
 		try {
 			Movie movie = Movie.getInfo(iD);
-			Toast.makeText(this, movie.getName(), Toast.LENGTH_SHORT).show();
-			if (!mDbHelper.movieExists(movie.getName())) {
+			String movieName = movie.getName();
+			if (!mDbHelper.movieExists(movieName)) {
 				String genreString = "";
 				for (Genre genre : movie.getGenres()) {
 					genreString += genre.getName();
 					genreString += " ";
 				}
+
 				Set<MoviePoster> poster = movie.getImages().posters;
 				Iterator<MoviePoster> iter = poster.iterator();
 				String posterurl = "";
@@ -133,16 +134,20 @@ public class MovieAdd extends ListActivity {
 					posterurl = iter.next().getLargestImage().toString();
 				}
 
-				// TODO add null checks on all parameters here, might be causing problems when adding a new movie
-				// TODO add local parameters for getOverview and getTrailer, these can still be NULL
-				mDbHelper.createMovie(movie.getName(), Integer.toString(movie
-						.getReleasedDate().getYear() + 1900), genreString,
-						movie.getOverview(), posterurl, movie.getTrailer()
-								.toString());
-			}
+				URL trailerurl = movie.getTrailer();
+				String trailer = null;
+				if (trailerurl != null)
+					trailer = trailerurl.toExternalForm();
+				
 
-			setResult(RESULT_OK);
-			finish();
+				mDbHelper.createMovie(movieName, Integer.toString(movie
+						.getReleasedDate().getYear() + 1900), genreString,
+						movie.getOverview(), posterurl, trailer);
+				
+				setResult(RESULT_OK);
+				finish();
+			}
+			else Toast.makeText(this, "Movie \"" + movieName + "\" already exists", Toast.LENGTH_SHORT).show();			
 
 		} catch (Exception e) {
 			e.printStackTrace();

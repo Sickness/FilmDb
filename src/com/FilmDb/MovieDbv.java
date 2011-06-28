@@ -94,6 +94,10 @@ public class MovieDbv extends ListActivity {
         // and an array of the fields we want to bind those fields to (in this case just text1)
         int[] to = new int[]{R.id.title,R.id.year};
 
+        // TODO create customized adapter with extra image per movie that displays if it has been watched already or not
+        // TODO add to longClick menu to set a movie as watched or not (onContextItemSelected)
+        // TODO add extra boolean to database that displays if the movie has been watched or not (default 0)
+        // TODO maybe add alertDialog on movieAdd that asks if the movie has been watched before inserting in database
         // Now create a simple cursor adapter and set it to display
         SimpleCursorAdapter movies = 
             new SimpleCursorAdapter(this, R.layout.movie_row, moviesCursor, from, to);
@@ -218,9 +222,14 @@ public class MovieDbv extends ListActivity {
     
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (gestureDetector.onTouchEvent(event))
-	        return true;
-	    else
-	    	return false;
+        super.onTouchEvent(event);
+        return gestureDetector.onTouchEvent(event);
     }
+
+    @Override 
+    public boolean dispatchTouchEvent(MotionEvent ev){
+        gestureDetector.onTouchEvent(ev);
+        super.dispatchTouchEvent(ev); 
+        return true;
+    } 
 }

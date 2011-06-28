@@ -24,7 +24,7 @@ public class MovieDbAdapter {
     
     private static final String DATABASE_NAME = "films.sqlite";
     private static final String DATABASE_TABLE_MOVIES = "movies";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TAG = "MoviesDbAdapter";
     private DatabaseHelper mDbHelper;
