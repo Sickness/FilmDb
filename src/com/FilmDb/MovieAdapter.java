@@ -3,8 +3,7 @@ package com.FilmDb;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +14,11 @@ import android.widget.TextView;
 public class MovieAdapter extends CursorAdapter {
 
 	// used to keep selected position in ListView
-	private int selectedPos = -1; // init value for not-selected
 	private int mTitleIndex;
 	private int mYearIndex;
 	private int mWatchedIndex;
-	private Bitmap icon_green;
-	private Bitmap icon_red;
+	private Drawable icon_green;
+	private Drawable icon_red;
 	private Context mContext;
 	private Cursor mCursor;
 
@@ -33,19 +31,9 @@ public class MovieAdapter extends CursorAdapter {
 			mTitleIndex = c.getColumnIndex(MovieDefinitions.MovieDefinition.KEY_TITLE);
 			mYearIndex = c.getColumnIndex(MovieDefinitions.MovieDefinition.KEY_YEAR);
 			mWatchedIndex = c.getColumnIndex(MovieDefinitions.MovieDefinition.KEY_WATCHED);
-			icon_green = BitmapFactory.decodeResource(res, R.drawable.icon_green_v);
-			icon_red = BitmapFactory.decodeResource(res, R.drawable.icon_red_v);
+			icon_green = res.getDrawable(R.drawable.icon_green_v);
+			icon_red = res.getDrawable(R.drawable.icon_red_v);
 		}
-	}
-
-	public void setSelectedPosition(int pos) {
-		selectedPos = pos;
-		// inform the view of this change
-		notifyDataSetChanged();
-	}
-
-	public int getSelectedPosition() {
-		return selectedPos;
 	}
 	
 	public int getWatched(int pos) {
@@ -69,8 +57,8 @@ public class MovieAdapter extends CursorAdapter {
 		holder.mYearView.setText(cursor.getString(mYearIndex));
 		watched = cursor.getInt(mWatchedIndex);
 		if(watched == 1)
-			holder.mWatchedView.setImageBitmap(icon_green);
-		else holder.mWatchedView.setImageBitmap(icon_red);	
+			holder.mWatchedView.setImageDrawable(icon_green);
+		else holder.mWatchedView.setImageDrawable(icon_red);	
 	}
 
 	@Override
@@ -85,7 +73,7 @@ public class MovieAdapter extends CursorAdapter {
 			holder = new ViewHolder();
 			holder.mTitleView =(TextView) v.findViewById(R.id.title);
 			holder.mYearView =(TextView) v.findViewById(R.id.year);
-			holder.mWatchedView = (ImageView) v.findViewById(R.id.watched_icon);
+			holder.mWatchedView = (ImageView) v.findViewById(R.id.icon_watched);
 			
 			v.setTag(holder);
 			return v;

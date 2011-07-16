@@ -6,13 +6,13 @@
 	android:layout_height="35dip"
 	android:gravity="center_vertical"
 	android:paddingLeft="5dip"
-	android:background="#323331">
+	android:background="#000000">
 
 	<ImageView 
 		android:id="@+id/header" 
 		android:src="@drawable/header"
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" />
+		android:layout_width="120dp" 
+		android:layout_height="60dp" />
 	
 	<LinearLayout
 		android:layout_width="wrap_content"
@@ -30,8 +30,8 @@
 				    
 	    <ImageView 
 			android:id="@+id/icon" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"/>
+			android:layout_width="25dp" 
+			android:layout_height="25dp"/>
 				
 	</LinearLayout>
 

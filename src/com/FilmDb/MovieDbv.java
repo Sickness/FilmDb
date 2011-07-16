@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.MotionEvent;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -58,7 +59,6 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);        
 		GeneralSettings.setApiKey("33fc4693e8d0e1e72fc38c09cc0817d3");
-		setContentView(R.layout.movie_list);
 
 		CategoryText = (TextView)findViewById(R.id.category);
 		viewFlipper = (ViewFlipper)findViewById(R.id.flipper);

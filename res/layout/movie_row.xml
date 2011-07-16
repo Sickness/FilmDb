@@ -2,17 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="wrap_content">
 	<LinearLayout android:layout_width="wrap_content"
-		android:layout_marginLeft="20dp"
+		android:layout_marginLeft="5dp" android:id="@+id/row_layout"
 		android:layout_height="wrap_content" android:orientation="vertical">
 		<TextView android:id="@+id/title" android:textSize="16dp"
-			android:textStyle="bold" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
+			android:textStyle="bold" android:layout_width="270dp"
+			android:layout_height="wrap_content" android:ellipsize="marquee"
+			android:singleLine="true" />
 
 		<TextView android:id="@+id/year" android:textSize="12dp"
 			android:textStyle="italic" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" />
 	</LinearLayout>
-	<ImageView android:id="@+id/watched_icon" android:layout_alignParentRight="true"
-	android:layout_centerVertical="true" android:layout_marginRight="20dp"
-	android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/icon_red_v"/>
+	<ImageView android:id="@+id/icon_watched"
+		android:layout_width="20dp" android:layout_marginRight="5dp"
+		android:layout_alignParentRight="true" android:layout_centerVertical="true"
+		android:layout_height="20dp" android:background="@drawable/icon_red_v" />
 </RelativeLayout>

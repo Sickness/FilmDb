@@ -44,11 +44,11 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 		movieTitle = b.getString("MovieTitle");
 
 		setContentView(R.layout.movie_add);
-		setTitle(R.string.menu_insert);
-
+		this.icon.setImageResource(R.drawable.icon_add);
+		
 		fillData();
 	}
-
+	
 	private void fillData() {
 		List<Movie> movies = null;
 		try {

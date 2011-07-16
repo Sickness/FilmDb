@@ -17,9 +17,9 @@ public class CustomWindow extends Activity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-        
+		super.onCreate(savedInstanceState);     
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+    	setContentView(R.layout.movie_list);
         
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
         
