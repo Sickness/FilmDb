@@ -7,10 +7,10 @@
 		<TextView android:id="@+id/category"
 	android:layout_width="wrap_content" android:layout_height="wrap_content"
 	android:textSize="20dp"/>
-		<ListView android:id="@+id/android:list"  android:cacheColorHint="#00000000"
+		<ListView android:id="@+id/movielist"  android:cacheColorHint="#00000000"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-		<TextView android:id="@+id/android:empty"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="@string/no_movies" />
+			<TextView android:id="@+id/empty_movielist" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:visibility="gone"
+			android:text="@string/no_movies"/>
 	</LinearLayout>
 </ViewFlipper>

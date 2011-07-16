@@ -8,6 +8,8 @@ import com.FilmDb.R;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -24,21 +26,19 @@ import java.util.List;
 import java.util.Set;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.DialogInterface;
 
-public class MovieAdd extends ListActivity {
+public class MovieAdd extends CustomWindow implements OnItemClickListener {
 
-	private MovieDbAdapter mDbHelper;
 	private String movieTitle;
 	private List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+	private String genreString = "";
+	private String posterurl = "";
+	private String trailer = null;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		mDbHelper = new MovieDbAdapter(this);
-		mDbHelper.open();
 
 		Bundle b = this.getIntent().getExtras();
 		movieTitle = b.getString("MovieTitle");
@@ -62,9 +62,9 @@ public class MovieAdd extends ListActivity {
 					map.put("ID", Integer.toString(movie.getID()));
 					map.put("title",
 							movie.getName()
-									+ " ("
-									+ Integer.toString(movie.getReleasedDate()
-											.getYear() + 1900) + ")");
+							+ " ("
+							+ Integer.toString(movie.getReleasedDate()
+									.getYear() + 1900) + ")");
 					list.add(map);
 				}
 
@@ -80,16 +80,76 @@ public class MovieAdd extends ListActivity {
 				SimpleAdapter adapter = new SimpleAdapter(
 						this.getApplicationContext(), list,
 						R.layout.movie_add_row, from, to);
-				setListAdapter(adapter);
+				ListView lvMovieList = (ListView) findViewById(R.id.movieadd_list);
+				lvMovieList.setEmptyView(findViewById(R.id.empty_movieaddlist));
+				lvMovieList.setAdapter(adapter);
+				lvMovieList.setOnItemClickListener(this);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	protected void saveMovieToDb(int iD) {
+		try {
+			final Movie movie = Movie.getInfo(iD);
+			final String movieName = movie.getName();
+			if (!movieExists(movieName)) {
+				
+				for (Genre genre : movie.getGenres()) {
+					genreString += genre.getName();
+					genreString += " ";
+				}
+
+				Set<MoviePoster> poster = movie.getImages().posters;
+				Iterator<MoviePoster> iter = poster.iterator();
+				
+				if (iter.hasNext()) {
+					posterurl = iter.next().getLargestImage().toString();
+				}
+
+				URL trailerurl = movie.getTrailer();
+				if (trailerurl != null)
+					trailer = trailerurl.toExternalForm();
+
+				AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+				alert.setTitle("Watched?");
+				alert.setMessage("Did you watch \"" + movieName + "\" already?");
+
+				alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						createMovie(movieName, Integer.toString(movie
+								.getReleasedDate().getYear() + 1900), genreString,
+								movie.getOverview(), posterurl, trailer, true);
+						setResult(RESULT_OK);
+						finish();
+					}
+				});
+
+				alert.setNegativeButton("No",
+						new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						createMovie(movieName, Integer.toString(movie
+								.getReleasedDate().getYear() + 1900), genreString,
+								movie.getOverview(), posterurl, trailer, false);
+						setResult(RESULT_OK);
+						finish();
+					}
+				});
+
+				alert.show();
+			}
+			else Toast.makeText(this, "Movie \"" + movieName + "\" already exists", Toast.LENGTH_SHORT).show();			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
 		HashMap<String, String> map = list.get(position);
 		final int ID = Integer.parseInt(map.get("ID"));
 		String title = map.get("title");
@@ -107,51 +167,11 @@ public class MovieAdd extends ListActivity {
 
 		alert.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						// Canceled.
-					}
-				});
-
-		alert.show();
-
-	}
-
-	protected void saveMovieToDb(int iD) {
-		try {
-			Movie movie = Movie.getInfo(iD);
-			String movieName = movie.getName();
-			if (!mDbHelper.movieExists(movieName)) {
-				String genreString = "";
-				for (Genre genre : movie.getGenres()) {
-					genreString += genre.getName();
-					genreString += " ";
-				}
-
-				Set<MoviePoster> poster = movie.getImages().posters;
-				Iterator<MoviePoster> iter = poster.iterator();
-				String posterurl = "";
-				if (iter.hasNext()) {
-					posterurl = iter.next().getLargestImage().toString();
-				}
-
-				URL trailerurl = movie.getTrailer();
-				String trailer = null;
-				if (trailerurl != null)
-					trailer = trailerurl.toExternalForm();
-				
-
-				mDbHelper.createMovie(movieName, Integer.toString(movie
-						.getReleasedDate().getYear() + 1900), genreString,
-						movie.getOverview(), posterurl, trailer);
-				
-				setResult(RESULT_OK);
-				finish();
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Canceled.
 			}
-			else Toast.makeText(this, "Movie \"" + movieName + "\" already exists", Toast.LENGTH_SHORT).show();			
+		});
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		alert.show();		
 	}
 }

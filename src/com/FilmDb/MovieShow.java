@@ -11,7 +11,6 @@ import java.net.URLConnection;
 
 import com.FilmDb.R;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,21 +25,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MovieShow extends Activity {
+public class MovieShow extends CustomWindow {
 
     private TextView mTitleText;
     private TextView mGenreText;
     private TextView mSynopsisText;
     private Long mRowId;
-    private MovieDbAdapter mDbHelper;
     private Cursor movie;
     private static final String TAG = "MovieShow";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDbHelper = new MovieDbAdapter(this);
-        mDbHelper.open();
 
         setContentView(R.layout.movie_show);
         setTitle(R.string.show_movie);
@@ -52,10 +48,10 @@ public class MovieShow extends Activity {
         Button confirmButton = (Button) findViewById(R.id.done);
 
         mRowId = (savedInstanceState == null) ? null :
-            (Long) savedInstanceState.getSerializable(MovieDbAdapter.KEY_ROWID);
+            (Long) savedInstanceState.getSerializable(MovieDefinitions.MovieDefinition.KEY_ROWID);
 		if (mRowId == null) {
 			Bundle extras = getIntent().getExtras();
-			mRowId = extras != null ? extras.getLong(MovieDbAdapter.KEY_ROWID)
+			mRowId = extras != null ? extras.getLong(MovieDefinitions.MovieDefinition.KEY_ROWID)
 									: null;
 		}
 
@@ -73,14 +69,14 @@ public class MovieShow extends Activity {
 
     private void populateFields() {
         if (mRowId != null) {
-            movie = mDbHelper.fetchMovie(mRowId);
+            movie = fetchMovie(mRowId);
             startManagingCursor(movie);
             mTitleText.setText(movie.getString(
-                    movie.getColumnIndexOrThrow(MovieDbAdapter.KEY_TITLE)));
+                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_TITLE)));
             mGenreText.setText(movie.getString(
-                    movie.getColumnIndexOrThrow(MovieDbAdapter.KEY_GENRE)));
+                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_GENRE)));
             mSynopsisText.setText(movie.getString(
-                    movie.getColumnIndexOrThrow(MovieDbAdapter.KEY_SYNOPSIS)));
+                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_SYNOPSIS)));
             new FetchPosterTask().execute();
         }
     }
@@ -124,7 +120,7 @@ public class MovieShow extends Activity {
     	      // automatically done on worker thread (separate from UI thread)
     	      protected Void doInBackground(final String... args) {
     	    	  bm = getRemoteImage(movie.getString(
-    	                    movie.getColumnIndexOrThrow(MovieDbAdapter.KEY_POSTER)));
+    	                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_POSTER)));
     	        return null;
     	      }
     	 
@@ -146,7 +142,7 @@ public class MovieShow extends Activity {
     {
     	 public void onClick(View v) {
     		 String trailer =  movie.getString(
-    	             movie.getColumnIndexOrThrow(MovieDbAdapter.KEY_TRAILER));
+    	             movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_TRAILER));
     		 if(trailer != null)
     	        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailer)));
     		 else Toast.makeText(MovieShow.this, "No trailer available", Toast.LENGTH_SHORT).show();
