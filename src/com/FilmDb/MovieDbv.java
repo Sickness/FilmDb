@@ -31,7 +31,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-// TODO add extra buttons to listview: delete/view + change imageview to button --> remove context menu (only buttons used)
 // TODO Maybe add support to toggle between ascending and descending
 // TODO Add activity to view by first letter of title --> with a clickable gallery or scrollview or something on top
 // TODO download images to sd-card (movieAdd) and load from sd-card (movieShow) -- on delete: remove image from sd-card
@@ -42,6 +41,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	private static final int SORT_ID = Menu.FIRST + 2;
 	private static final int WATCHED_ID = Menu.FIRST + 3;
 	private static final int VISIBILITY_ID = Menu.FIRST + 4;
+	private static final int DELETE_ALL_ID = Menu.FIRST + 5;
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -56,7 +56,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 
 	private MovieAdapter movieAdapter;
 
-	private int checkedVisibility = 0;
+	private int checkedVisibility = 0; // 0-all / 1-To be watched / 2-Watched
 
 	private TextView CategoryText;
 
@@ -106,6 +106,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, INSERT_ID, 0, R.string.menu_insert);
+		menu.add(0,DELETE_ALL_ID,0,R.string.menu_delete_all);
 		menu.add(0, SORT_ID, 0, R.string.menu_sort);
 		menu.add(0,VISIBILITY_ID,0,R.string.menu_visibility);
 		return true;
@@ -134,6 +135,26 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 			});
 			builder.create().show();
 			return true;
+		case DELETE_ALL_ID:
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+			alert.setTitle("Delete All Movies?");
+			alert.setMessage("Are you sure you want to delete all movies from the database?");
+			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					deleteAllMovies();
+					fillData();
+				}
+			});
+
+			alert.setNegativeButton("No",
+					new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+				}
+			});
+
+			alert.show();
+			return true;
 		}
 
 		return super.onMenuItemSelected(featureId, item);
@@ -158,7 +179,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 			alert.setMessage("Are you sure you want to delete \"" + movieAdapter.getTitle(info.position) + "\"?");
 			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-					deleteMovie(info.id);
+					deleteMovie(info.id, movieAdapter.getId(info.position));
 					fillData();
 				}
 			});

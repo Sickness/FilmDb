@@ -5,6 +5,8 @@
 package com.FilmDb;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -42,7 +44,9 @@ public class MovieShow extends CustomWindow implements OnClickListener {
     private TextView mSynopsisText;
     private Button mWatched;
     private Button mDelete;
+    private ImageView iv;
     private Long mRowId;
+    private int movieId;
     private Cursor movie;
     private int watched;
 
@@ -58,6 +62,9 @@ public class MovieShow extends CustomWindow implements OnClickListener {
         mSynopsisText = (TextView) findViewById(R.id.synopsis);
         mWatched = (Button) findViewById(R.id.watched_show);
         mDelete = (Button) findViewById(R.id.delete_show);
+
+        iv = (ImageView)findViewById(R.id.poster);
+        iv.setOnClickListener(imageviewClicker);
 
         mRowId = (savedInstanceState == null) ? null :
             (Long) savedInstanceState.getSerializable(MovieDefinitions.MovieDefinition.KEY_ROWID);
@@ -84,7 +91,13 @@ public class MovieShow extends CustomWindow implements OnClickListener {
             mWatched.setBackgroundResource(watched==1?R.drawable.icon_green_v:R.drawable.icon_red_v);
             mWatched.setOnClickListener(this);
             mDelete.setOnClickListener(this);
-            new FetchPosterTask().execute();
+            
+            movieId = movie.getInt(movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_MOVIEID));
+            File path = new File(extendedFilepath + movieId  + ".png");
+            Bitmap image = getSdcardImage(path);
+            if(image == null)
+            	new FetchPosterTask().execute();
+            else iv.setImageBitmap(getRoundedCornerBitmap(image,12));
         }
     }
 
@@ -97,6 +110,16 @@ public class MovieShow extends CustomWindow implements OnClickListener {
     protected void onResume() {
         super.onResume();
         populateFields();
+    }
+    
+    public Bitmap getSdcardImage(final File path) {
+        try {
+            final FileInputStream bis = new FileInputStream(path);
+            final Bitmap bm = BitmapFactory.decodeStream(bis, null, null);
+            bis.close();
+            return bm;
+        } catch (IOException e) {}
+        return null;
     }
     
     public Bitmap getRemoteImage(final String url) {
@@ -136,9 +159,6 @@ public class MovieShow extends CustomWindow implements OnClickListener {
     	        if (this.dialog.isShowing()) {
     	            this.dialog.dismiss();
     	         }
-    	        ImageView iv = new ImageView(MovieShow.this);
-    	        iv = (ImageView)findViewById(R.id.poster);
-    	        iv.setOnClickListener(imageviewClicker);
     	        if(bm != null)
     	        	iv.setImageBitmap(getRoundedCornerBitmap(bm,12));
     	        
@@ -172,7 +192,7 @@ public class MovieShow extends CustomWindow implements OnClickListener {
     	 public void onClick(View v) {
     		 String trailer =  movie.getString(
     	             movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_TRAILER));
-    		 if(trailer != null)
+    		 if(trailer != null && isOnline())
     	        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailer)));
     		 else Toast.makeText(MovieShow.this, "No trailer available", Toast.LENGTH_SHORT).show();
     	 }
@@ -193,7 +213,7 @@ public class MovieShow extends CustomWindow implements OnClickListener {
 
 			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-					deleteMovie(mRowId);
+					deleteMovie(mRowId, movieId);
 					setResult(RESULT_OK);
 					finish();
 				}

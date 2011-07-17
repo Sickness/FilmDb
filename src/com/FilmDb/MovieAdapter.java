@@ -17,6 +17,7 @@ public class MovieAdapter extends CursorAdapter {
 	private int mTitleIndex;
 	private int mYearIndex;
 	private int mWatchedIndex;
+	private int mIdIndex;
 	private Drawable icon_green;
 	private Drawable icon_red;
 	private Context mContext;
@@ -31,6 +32,7 @@ public class MovieAdapter extends CursorAdapter {
 			mTitleIndex = c.getColumnIndex(MovieDefinitions.MovieDefinition.KEY_TITLE);
 			mYearIndex = c.getColumnIndex(MovieDefinitions.MovieDefinition.KEY_YEAR);
 			mWatchedIndex = c.getColumnIndex(MovieDefinitions.MovieDefinition.KEY_WATCHED);
+			mIdIndex = c.getColumnIndex(MovieDefinitions.MovieDefinition.KEY_MOVIEID);
 			icon_green = res.getDrawable(R.drawable.icon_green_v);
 			icon_red = res.getDrawable(R.drawable.icon_red_v);
 		}
@@ -45,6 +47,11 @@ public class MovieAdapter extends CursorAdapter {
 		mCursor.moveToPosition(pos);
 		return mCursor.getString(mTitleIndex);
 	}
+	
+	public int getId(int pos) {
+		mCursor.moveToPosition(pos);
+		return mCursor.getInt(mIdIndex);
+	}	
 	
 	class ViewHolder {
 		TextView mTitleView;

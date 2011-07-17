@@ -6,7 +6,9 @@ package com.FilmDb;
 
 import com.FilmDb.R;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -18,7 +20,12 @@ import net.sf.jtmdb.Genre;
 import net.sf.jtmdb.Movie;
 import net.sf.jtmdb.MoviePoster;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +33,11 @@ import java.util.List;
 import java.util.Set;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 
 public class MovieAdd extends CustomWindow {
 
@@ -40,15 +51,15 @@ public class MovieAdd extends CustomWindow {
 		movieTitle = b.getString("MovieTitle");
 
 		setContentView(R.layout.movie_add);
-		
+
 		fillData();
 	}
-	
+
 	private void fillData() {
 		try {
 			final List<Movie> movieList = Movie.search(movieTitle);
 			List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-			
+
 			if (!movieList.isEmpty()) {
 				// Create an array to specify the fields we want to display in
 				// the list (only TITLE)
@@ -114,11 +125,11 @@ public class MovieAdd extends CustomWindow {
 
 	protected void saveMovieToDb(Movie movie) {
 		try {
+
+			final int ID = movie.getID();
 			final String movieName = movie.getName();
-			if (!movieExists(movieName)) {	
-				int ID = movie.getID();
-				movie = Movie.getInfo(ID);
-				
+			if (!movieExists(ID)) {	
+				movie = Movie.getInfo(ID);	
 				StringBuilder genreBuilder = new StringBuilder("");
 				Set<Genre> genres = movie.getGenres();
 				Iterator<Genre> genreIterator = genres.iterator();
@@ -136,17 +147,17 @@ public class MovieAdd extends CustomWindow {
 					posterHulpUrl.append(iter.next().getLargestImage().toString());
 				}				
 				final String posterurl = posterHulpUrl.toString();
-				
+
 				StringBuilder trailerBuilder = new StringBuilder();
 				URL trailerurl = movie.getTrailer();
 				if (trailerurl != null)
 					trailerBuilder.append(trailerurl.toExternalForm());
-				
+
 				final String trailer = trailerBuilder.toString();
-				
+
 				final String movieYear = Integer.toString(movie
 						.getReleasedDate().getYear() + 1900);
-				
+
 				final String movieOverview = movie.getOverview();
 
 				AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -155,21 +166,19 @@ public class MovieAdd extends CustomWindow {
 				alert.setMessage("Did you watch \"" + movieName + "\" already?");
 
 				alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						createMovie(movieName, movieYear, genreString,
+					public void onClick(DialogInterface dialog, int whichButton) {				
+						createMovie(ID, movieName, movieYear, genreString,
 								movieOverview, posterurl, trailer, true);
-						setResult(RESULT_OK);
-						finish();
+						new FetchPosterTask().execute(posterurl,Integer.toString(ID));
 					}
 				});
 
 				alert.setNegativeButton("No",
 						new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						createMovie(movieName, movieYear, genreString,
+						createMovie(ID, movieName, movieYear, genreString,
 								movieOverview, posterurl, trailer, false);
-						setResult(RESULT_OK);
-						finish();
+						new FetchPosterTask().execute(posterurl,Integer.toString(ID));
 					}
 				});
 
@@ -181,5 +190,54 @@ public class MovieAdd extends CustomWindow {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void getRemoteImage(final String url, final String imageName) {
+		try {
+			URL aURL = new URL(url);
+			final URLConnection conn = aURL.openConnection();
+			conn.connect();
+			BitmapFactory.Options options;
+			options=new BitmapFactory.Options();
+			options.inSampleSize = 4;
+			final BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+			final Bitmap bm = BitmapFactory.decodeStream(bis, null, options);
+			bis.close();
+
+			String path = extendedFilepath + imageName + ".png";
+
+			Log.i("MovieAdd", path);
+
+			FileOutputStream fos = null;
+			fos = new FileOutputStream(path); 
+
+			Log.i("MovieAdd",Boolean.toString(bm.compress(CompressFormat.PNG, 100, fos)));   
+			fos.flush();
+			fos.close();             
+		} catch (IOException e) {}
+	}
+
+	private class FetchPosterTask extends AsyncTask<String, Void, Void> {
+		private final ProgressDialog dialog = new ProgressDialog(MovieAdd.this);
+		// can use UI thread here
+		protected void onPreExecute() {
+			this.dialog.setMessage("Saving movie...");
+			this.dialog.show();
+		} 		 
+		// automatically done on worker thread (separate from UI thread)
+		protected Void doInBackground(final String... args) {
+			File path = new File(extendedFilepath);
+			path.mkdirs();
+			getRemoteImage(args[0],args[1]);
+			return null;
+		}    	 
+		// can use UI thread here
+		protected void onPostExecute(final Void unused) { 	 
+			if (this.dialog.isShowing()) {
+				this.dialog.dismiss();
+			}
+			setResult(RESULT_OK);
+			finish();
+		}
 	}
 }

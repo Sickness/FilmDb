@@ -1,21 +1,32 @@
 package com.FilmDb;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.ImageView;
 
 public class CustomWindow extends Activity {
+	// only used in this activity
+	private String filepath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FilmDb";
+	
+	// used by all activities
 	protected TextView title;
 	protected ImageView icon;
-	protected Globals globals = new Globals();
-
+	protected Globals globals = new Globals();	
+	protected String extendedFilepath = filepath + "/";
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);     
@@ -38,8 +49,9 @@ public class CustomWindow extends Activity {
 	 * @param synopsis the synopsis of the movie
 	 * @return rowId or -1 if failed
 	 */
-	public void createMovie(String title, String year, String genre, String synopsis, String posterurl, String trailerurl, boolean watched) {
-		ContentValues initialValues = new ContentValues();       
+	public void createMovie(int movieId, String title, String year, String genre, String synopsis, String posterurl, String trailerurl, boolean watched) {
+		ContentValues initialValues = new ContentValues();   
+		initialValues.put(MovieDefinitions.MovieDefinition.KEY_MOVIEID,movieId);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_TITLE, title);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_YEAR, year);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_GENRE, genre);
@@ -56,9 +68,29 @@ public class CustomWindow extends Activity {
 	 * 
 	 * @param rowId id of movie to delete
 	 */
-	public void deleteMovie(long rowId) {
+	public void deleteMovie(long rowId, int movieId) {
+		File image = new File(filepath + "/" + movieId + ".png");
+		image.delete();
+		
+		File sdCardPath = new File(filepath);
+		if (sdCardPath.isDirectory()) {
+		    String[] files = sdCardPath.list();
+		    if (files.length == 0) {
+		    	sdCardPath.delete();
+		    }
+		}
 		Uri uri = MovieDefinitions.MovieDefinition.CONTENT_URI;
 		getContentResolver().delete(uri, MovieDefinitions.MovieDefinition.KEY_ROWID + "=?", new String[]{Long.toString(rowId)});
+	}
+	
+	/**
+	 * Delete all movies
+	 */
+	public void deleteAllMovies() {		
+		File sdCardPath = new File(filepath);
+		DeleteRecursive(sdCardPath);
+		Uri uri = MovieDefinitions.MovieDefinition.CONTENT_URI;
+		getContentResolver().delete(uri, null, null);
 	}
 
 	/**
@@ -88,7 +120,7 @@ public class CustomWindow extends Activity {
 
 		String columns[] = new String[] { MovieDefinitions.MovieDefinition.KEY_ROWID, 
 				MovieDefinitions.MovieDefinition.KEY_TITLE, MovieDefinitions.MovieDefinition.KEY_YEAR,
-				MovieDefinitions.MovieDefinition.KEY_WATCHED};
+				MovieDefinitions.MovieDefinition.KEY_MOVIEID, MovieDefinitions.MovieDefinition.KEY_WATCHED};
 		Uri myUri = MovieDefinitions.MovieDefinition.CONTENT_URI;
 		Cursor cur = getContentResolver().query(myUri, columns, MovieDefinitions.MovieDefinition.KEY_GENRE + " like ?",
 				new String[] {"%" + globals.getCurrentGenre() + "%"}, orderBy);
@@ -129,6 +161,7 @@ public class CustomWindow extends Activity {
 	public Cursor fetchMovie(long rowId) throws SQLException {
 
 		String columns[] = new String[] { MovieDefinitions.MovieDefinition.KEY_ROWID, 
+				MovieDefinitions.MovieDefinition.KEY_MOVIEID,
 				MovieDefinitions.MovieDefinition.KEY_TITLE, MovieDefinitions.MovieDefinition.KEY_YEAR,
 				MovieDefinitions.MovieDefinition.KEY_GENRE, MovieDefinitions.MovieDefinition.KEY_SYNOPSIS,
 				MovieDefinitions.MovieDefinition.KEY_POSTER, MovieDefinitions.MovieDefinition.KEY_TRAILER,
@@ -152,13 +185,13 @@ public class CustomWindow extends Activity {
 	 * @param movie ID
 	 * @return boolean
 	 */
-	public boolean movieExists(String title) {
+	public boolean movieExists(int ID) {
 
 		String columns[] = new String[] { MovieDefinitions.MovieDefinition.KEY_ROWID};
 		Uri myUri = MovieDefinitions.MovieDefinition.CONTENT_URI;
 		Cursor cur = managedQuery(myUri, columns, // Which columns to return
-				MovieDefinitions.MovieDefinition.KEY_TITLE+"=?", // WHERE clause; which rows to return(all rows)
-				new String[] {title},// WHERE clause selection arguments (none)
+				MovieDefinitions.MovieDefinition.KEY_MOVIEID +"=?", // WHERE clause; which rows to return(all rows)
+				new String[] {Integer.toString(ID)},// WHERE clause selection arguments (none)
 				null // Order-by clause (ascending by name)
 
 		);
@@ -166,6 +199,23 @@ public class CustomWindow extends Activity {
 		cur.close();
 		return exists;
 
+	}
+	
+	private void DeleteRecursive(File fileOrDirectory) {
+	    if (fileOrDirectory.isDirectory())
+	        for (File child : fileOrDirectory.listFiles())
+	            DeleteRecursive(child);
+
+	    fileOrDirectory.delete();
+	}
+	
+	public boolean isOnline() {
+	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnected()) {
+	        return true;
+	    }
+	    return false;
 	}
 }
 

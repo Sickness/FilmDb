@@ -20,6 +20,7 @@ public class MovieDefinitions {
         public static final String KEY_POSTER = "posterurl";
         public static final String KEY_TRAILER = "trailerurl";
         public static final String KEY_WATCHED = "watched";
+        public static final String KEY_MOVIEID = "movieId";
         public static final String KEY_ROWID = "_id";
     }
 }

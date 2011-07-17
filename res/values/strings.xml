@@ -4,6 +4,7 @@
     <string name="no_movies">No Movies Yet</string>
     <string name="menu_insert">Add Movie</string>
     <string name="menu_delete">Delete Movie</string>
+    <string name="menu_delete_all">Delete All Movies</string>
     <string name="menu_sort">Sort by Title/Year</string>
     <string name="menu_watched">Watched/Not watched</string>
     <string name="menu_visibility">Toggle Visibility</string>

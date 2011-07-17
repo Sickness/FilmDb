@@ -19,7 +19,7 @@ public class MovieContentProvider extends ContentProvider {
 
 	private static final String DATABASE_NAME    = "films.sqlite";
 
-	private static final int    DATABASE_VERSION = 2;
+	private static final int    DATABASE_VERSION = 3;
 
 	private static final String TABLE_NAME       = "movies";
 
@@ -28,6 +28,7 @@ public class MovieContentProvider extends ContentProvider {
 	 */
 	private static final String DATABASE_CREATE_MOVIES =
 		"CREATE TABLE " + TABLE_NAME + " (" + MovieDefinitions.MovieDefinition.KEY_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+		+ MovieDefinitions.MovieDefinition.KEY_MOVIEID + " INTEGER NOT NULL, " 
 		+ MovieDefinitions.MovieDefinition.KEY_TITLE + " TEXT NOT NULL, " + MovieDefinitions.MovieDefinition.KEY_YEAR + " TEXT NOT NULL, "
 		+ MovieDefinitions.MovieDefinition.KEY_GENRE + " TEXT, " + MovieDefinitions.MovieDefinition.KEY_SYNOPSIS + " TEXT, " 
 		+ MovieDefinitions.MovieDefinition.KEY_POSTER + " TEXT, " + MovieDefinitions.MovieDefinition.KEY_TRAILER + " TEXT, "
