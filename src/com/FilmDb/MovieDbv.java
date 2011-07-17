@@ -56,7 +56,6 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 
 	private MovieAdapter movieAdapter;
 
-	private Globals globals = new Globals();
 	private int checkedVisibility = 0;
 
 	private TextView CategoryText;

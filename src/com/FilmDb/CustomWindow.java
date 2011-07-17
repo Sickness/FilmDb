@@ -14,7 +14,7 @@ import android.widget.ImageView;
 public class CustomWindow extends Activity {
 	protected TextView title;
 	protected ImageView icon;
-	private Globals globals = new Globals();;
+	protected Globals globals = new Globals();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
