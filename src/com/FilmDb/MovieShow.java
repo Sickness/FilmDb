@@ -58,12 +58,12 @@ public class MovieShow extends CustomWindow implements OnClickListener {
         setTitle(R.string.show_movie);
 
         mTitleText = (TextView) findViewById(R.id.title_show);
-        mGenreText = (TextView) findViewById(R.id.genre);
-        mSynopsisText = (TextView) findViewById(R.id.synopsis);
+        mGenreText = (TextView) findViewById(R.id.genre_show);
+        mSynopsisText = (TextView) findViewById(R.id.synopsis_show);
         mWatched = (Button) findViewById(R.id.watched_show);
         mDelete = (Button) findViewById(R.id.delete_show);
 
-        iv = (ImageView)findViewById(R.id.poster);
+        iv = (ImageView)findViewById(R.id.poster_show);
         iv.setOnClickListener(imageviewClicker);
 
         mRowId = (savedInstanceState == null) ? null :

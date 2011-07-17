@@ -19,7 +19,7 @@ public class MovieContentProvider extends ContentProvider {
 
 	private static final String DATABASE_NAME    = "films.sqlite";
 
-	private static final int    DATABASE_VERSION = 3;
+	private static final int    DATABASE_VERSION = 6;
 
 	private static final String TABLE_NAME       = "movies";
 

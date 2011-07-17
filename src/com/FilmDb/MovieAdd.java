@@ -152,7 +152,6 @@ public class MovieAdd extends CustomWindow {
 				URL trailerurl = movie.getTrailer();
 				if (trailerurl != null)
 					trailerBuilder.append(trailerurl.toExternalForm());
-
 				final String trailer = trailerBuilder.toString();
 
 				final String movieYear = Integer.toString(movie

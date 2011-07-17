@@ -142,7 +142,7 @@ public class CustomWindow extends Activity {
 
 		String columns[] = new String[] { MovieDefinitions.MovieDefinition.KEY_ROWID, 
 				MovieDefinitions.MovieDefinition.KEY_TITLE, MovieDefinitions.MovieDefinition.KEY_YEAR,
-				MovieDefinitions.MovieDefinition.KEY_WATCHED};
+				MovieDefinitions.MovieDefinition.KEY_MOVIEID, MovieDefinitions.MovieDefinition.KEY_WATCHED};
 		Uri myUri = MovieDefinitions.MovieDefinition.CONTENT_URI;
 		Cursor cur = getContentResolver().query(myUri, columns, MovieDefinitions.MovieDefinition.KEY_GENRE + " like ? AND " 
 				+ MovieDefinitions.MovieDefinition.KEY_WATCHED + "=?",
