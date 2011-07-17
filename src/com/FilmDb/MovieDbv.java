@@ -35,6 +35,7 @@ import android.widget.ViewFlipper;
 // TODO Maybe add support to toggle between ascending and descending
 // TODO Add activity to view by first letter of title --> with a clickable gallery or scrollview or something on top
 // TODO download images to sd-card (movieAdd) and load from sd-card (movieShow) -- on delete: remove image from sd-card
+// TODO add batch delete mode? only has fill data, with custom adapter with checkboxes + delete button to delete movies / select all / deselect all
 public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
@@ -52,9 +53,9 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	private Animation slideRightIn;
 	private Animation slideRightOut;
 	private ViewFlipper viewFlipper;
-	
+
 	private MovieAdapter movieAdapter;
-	
+
 	private Globals globals;
 	private int checkedVisibility = 0;
 
@@ -124,16 +125,16 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 			return true;
 		case VISIBILITY_ID:
 			final CharSequence[] items = {"All", "To be watched", "Watched"};
-	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	        builder.setTitle("Pick visibility-mode");
-	        builder.setItems(items, new DialogInterface.OnClickListener(){
-	            public void onClick(DialogInterface dialogInterface, int item) {
-	            	checkedVisibility = item;
-	            	fillData();
-	                return;
-	            }
-	        });
-	        builder.create().show();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Pick visibility-mode");
+			builder.setItems(items, new DialogInterface.OnClickListener(){
+				public void onClick(DialogInterface dialogInterface, int item) {
+					checkedVisibility = item;
+					fillData();
+					return;
+				}
+			});
+			builder.create().show();
 			return true;
 		}
 
@@ -150,17 +151,34 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
-		case DELETE_ID:		
-			deleteMovie(info.id);
-			fillData();
+		case DELETE_ID:
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+			alert.setTitle("Delete Movie?");
+			alert.setMessage("Are you sure you want to delete \"" + movieAdapter.getTitle(info.position) + "\"?");
+			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					deleteMovie(info.id);
+					fillData();
+				}
+			});
+
+			alert.setNegativeButton("No",
+					new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+				}
+			});
+
+			alert.show();
+
 			return true;
 		case WATCHED_ID:
-			toggleWatchedMovie(info.id, (movieAdapter.getWatched(info.position)==1?0:1) );
+			toggleWatchedMovie(info.id, (movieAdapter.getWatched(info.position)) );
 			fillData();
 			return true;
-			
+
 		}
 		return super.onContextItemSelected(item);
 	}

@@ -28,10 +28,9 @@ import java.util.Set;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
-public class MovieAdd extends CustomWindow implements OnItemClickListener {
+public class MovieAdd extends CustomWindow {
 
 	private String movieTitle;
-	private List<Movie> movies = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,20 +40,19 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 		movieTitle = b.getString("MovieTitle");
 
 		setContentView(R.layout.movie_add);
-		this.icon.setImageResource(R.drawable.icon_add);
 		
 		fillData();
 	}
 	
 	private void fillData() {
 		try {
-			movies = Movie.search(movieTitle);
+			final List<Movie> movieList = Movie.search(movieTitle);
 			List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 			
-			if (!movies.isEmpty()) {
+			if (!movieList.isEmpty()) {
 				// Create an array to specify the fields we want to display in
 				// the list (only TITLE)
-				for (Movie movie : movies) {
+				for (Movie movie : movieList) {
 					HashMap<String, String> map = new HashMap<String, String>();
 					map.put("ID", Integer.toString(movie.getID()));
 					map.put("title",
@@ -80,7 +78,34 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 				ListView lvMovieList = (ListView) findViewById(R.id.movieadd_list);
 				lvMovieList.setEmptyView(findViewById(R.id.empty_movieaddlist));
 				lvMovieList.setAdapter(adapter);
-				lvMovieList.setOnItemClickListener(this);
+				lvMovieList.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+						final Movie movie = movieList.get(position);
+						String title = movie.getName();
+
+						AlertDialog.Builder alert = new AlertDialog.Builder(MovieAdd.this);
+
+						alert.setTitle("Add Movie");
+						alert.setMessage("Add movie \"" + title + "\"?");
+
+						alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								saveMovieToDb(movie);
+							}
+						});
+
+						alert.setNegativeButton("Cancel",
+								new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								// Canceled.
+							}
+						});
+
+						alert.show();		
+					}
+				});
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,36 +115,34 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 	protected void saveMovieToDb(Movie movie) {
 		try {
 			final String movieName = movie.getName();
-			if (!movieExists(movieName)) {
+			if (!movieExists(movieName)) {	
+				int ID = movie.getID();
+				movie = Movie.getInfo(ID);
 				
-				String genreHulpString = "";
-				String posterHulpUrl = "";
-				String trailerHulpString = null;
-				
-				for (Genre genre : movie.getGenres()) {
-					genreHulpString += genre.getName();
-					genreHulpString += " ";
-				}
-			
-				final String genreString = genreHulpString;
-				genreHulpString = null;
+				StringBuilder genreBuilder = new StringBuilder("");
+				Set<Genre> genres = movie.getGenres();
+				Iterator<Genre> genreIterator = genres.iterator();
+				while(genreIterator.hasNext()) {
+					genreBuilder.append(genreIterator.next().getName());
+					if(genreIterator.hasNext())
+						genreBuilder.append(" - ");
+				}			
+				final String genreString = genreBuilder.toString();
 
+				StringBuilder posterHulpUrl = new StringBuilder("");
 				Set<MoviePoster> poster = movie.getImages().posters;
-				Iterator<MoviePoster> iter = poster.iterator();
-				
+				Iterator<MoviePoster> iter = poster.iterator();	
 				if (iter.hasNext()) {
-					posterHulpUrl = iter.next().getLargestImage().toString();
-				}
+					posterHulpUrl.append(iter.next().getLargestImage().toString());
+				}				
+				final String posterurl = posterHulpUrl.toString();
 				
-				final String posterurl = posterHulpUrl;
-				posterHulpUrl = null;
-
+				StringBuilder trailerBuilder = new StringBuilder();
 				URL trailerurl = movie.getTrailer();
 				if (trailerurl != null)
-					trailerHulpString = trailerurl.toExternalForm();
+					trailerBuilder.append(trailerurl.toExternalForm());
 				
-				final String trailer = trailerHulpString;
-				trailerHulpString = null;
+				final String trailer = trailerBuilder.toString();
 				
 				final String movieYear = Integer.toString(movie
 						.getReleasedDate().getYear() + 1900);
@@ -158,34 +181,5 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 			e.printStackTrace();
 		}
 
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-		Movie selectedMovie = null;
-		selectedMovie = movies.get(position);
-		String title = selectedMovie.getName();
-		final Movie movie = selectedMovie;
-		selectedMovie = null;
-
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-		alert.setTitle("Add Movie");
-		alert.setMessage("Add movie \"" + title + "\"?");
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				saveMovieToDb(movie);
-			}
-		});
-
-		alert.setNegativeButton("Cancel",
-				new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// Canceled.
-			}
-		});
-
-		alert.show();		
 	}
 }

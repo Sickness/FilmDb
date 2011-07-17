@@ -16,5 +16,5 @@
 	<ImageView android:id="@+id/icon_watched"
 		android:layout_width="20dp" android:layout_marginRight="5dp"
 		android:layout_alignParentRight="true" android:layout_centerVertical="true"
-		android:layout_height="20dp" android:background="@drawable/icon_red_v" />
+		android:layout_height="20dp" android:src="@drawable/icon_red_v" />
 </RelativeLayout>

@@ -68,10 +68,10 @@ public class CustomWindow extends Activity {
 	 * 
 	 * @param rowId id of movie to delete
 	 */
-	public void toggleWatchedMovie(long rowId, int watched) {
+	public void toggleWatchedMovie(long rowId, int previousValue) {
 		Uri uri = MovieDefinitions.MovieDefinition.CONTENT_URI;
 		ContentValues newValue = new ContentValues(); 
-		newValue.put(MovieDefinitions.MovieDefinition.KEY_WATCHED, watched);
+		newValue.put(MovieDefinitions.MovieDefinition.KEY_WATCHED, previousValue==1?0:1);
 		getContentResolver().update(uri, newValue, MovieDefinitions.MovieDefinition.KEY_ROWID + "=?", new String[]{Long.toString(rowId)});
 	}
 

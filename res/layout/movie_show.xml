@@ -1,27 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="match_parent"
-	android:layout_height="match_parent" android:background="@drawable/background">
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/background">
+	<ScrollView android:orientation="vertical" android:layout_above="@+id/myFooter"
+		android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="5dp">
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
 
-		<TextView android:id="@+id/title_show" android:layout_width="wrap_content"
-			android:textSize="16px" android:textStyle="bold"
-			android:layout_height="wrap_content" android:layout_marginBottom="5px" />
+			<RelativeLayout android:layout_height="wrap_content"
+				android:layout_width="wrap_content">
+				<TextView android:id="@+id/title_show"
+					android:layout_width="270dp" android:textSize="16dp"
+					android:textStyle="bold" android:layout_alignParentLeft="true"
+					android:ellipsize="marquee" android:singleLine="true"
+					android:layout_height="wrap_content" android:layout_marginBottom="5dp" />
+				<Button android:id="@+id/watched_show" android:layout_width="20dp"
+					android:layout_alignParentRight="true"
+					android:layout_centerVertical="true" android:layout_height="20dp"
+					android:background="@drawable/icon_red_v" />
+			</RelativeLayout>
 
+			<TextView android:id="@+id/genre" android:layout_width="wrap_content"
+				android:textStyle="italic" android:layout_height="wrap_content"
+				android:layout_marginBottom="5dp" />
 
-		<TextView android:id="@+id/genre" android:layout_width="wrap_content"
-			android:textStyle="italic" android:layout_height="wrap_content"
-			android:layout_marginBottom="5px" />
+			<ImageView android:layout_height="wrap_content"
+				android:src="@drawable/movie" android:layout_width="wrap_content"
+				android:id="@+id/poster" android:maxWidth="150dp" android:maxHeight="250dp"
+				android:adjustViewBounds="true" android:scaleType="fitCenter"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginBottom="5dp" android:clickable="true"></ImageView>
 
-		<ImageView android:layout_height="wrap_content" android:src="@drawable/movie"
-			android:layout_width="wrap_content" android:id="@+id/poster"
-			android:maxWidth="200px" android:maxHeight="400px"
-			android:adjustViewBounds="true" android:scaleType="fitCenter"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginBottom="5px" android:clickable="true"></ImageView>
-
-		<TextView android:id="@+id/synopsis" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_marginBottom="5px" />
-	</LinearLayout>
-</ScrollView>
+			<TextView android:id="@+id/synopsis" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginBottom="5dp" />
+		</LinearLayout>
+	</ScrollView>
+	
+	<RelativeLayout android:id="@+id/myFooter" android:padding="5dp" 
+        android:layout_alignParentBottom="true" android:layout_height="30dp"
+        android:layout_width="fill_parent" android:background="#80000000">
+        <Button android:id="@+id/delete_show" android:layout_width="20dp"
+					android:layout_alignParentRight="true"
+					android:layout_centerVertical="true" android:layout_height="20dp"
+					android:background="@drawable/icon_delete" />
+    </RelativeLayout>
+</RelativeLayout>

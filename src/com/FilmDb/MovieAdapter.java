@@ -41,6 +41,11 @@ public class MovieAdapter extends CursorAdapter {
 		return mCursor.getInt(mWatchedIndex);
 	}
 	
+	public String getTitle(int pos) {
+		mCursor.moveToPosition(pos);
+		return mCursor.getString(mTitleIndex);
+	}
+	
 	class ViewHolder {
 		TextView mTitleView;
 		TextView mYearView;
