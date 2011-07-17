@@ -56,7 +56,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 
 	private MovieAdapter movieAdapter;
 
-	private Globals globals;
+	private Globals globals = new Globals();
 	private int checkedVisibility = 0;
 
 	private TextView CategoryText;
@@ -66,7 +66,6 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);        
 		GeneralSettings.setApiKey("33fc4693e8d0e1e72fc38c09cc0817d3");
-		globals = new Globals();
 		CategoryText = (TextView)findViewById(R.id.category);
 		viewFlipper = (ViewFlipper)findViewById(R.id.flipper);
 		slideLeftIn = AnimationUtils.loadAnimation(this, R.anim.slide_left_in);

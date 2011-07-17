@@ -14,15 +14,13 @@ import android.widget.ImageView;
 public class CustomWindow extends Activity {
 	protected TextView title;
 	protected ImageView icon;
-	private Globals globals;
+	private Globals globals = new Globals();;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);     
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.movie_list);
-
-		globals = new Globals();
 
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
 
