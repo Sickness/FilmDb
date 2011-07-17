@@ -91,7 +91,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 		Cursor moviesCursor;
 		if(checkedVisibility == 0)
 			moviesCursor = fetchAllMovies();
-		else moviesCursor = fetchAllMovies(checkedVisibility==1?true:false);
+		else moviesCursor = fetchAllMovies(checkedVisibility - 1);
 		startManagingCursor(moviesCursor);
 		movieAdapter = 
 			new MovieAdapter(this,  moviesCursor);
@@ -122,7 +122,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 			fillData();
 			return true;
 		case VISIBILITY_ID:
-			final CharSequence[] items = {"All", "Watched", "To be watched"};
+			final CharSequence[] items = {"All", "To be watched", "Watched"};
 	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	        builder.setTitle("Pick visibility-mode");
 	        builder.setItems(items, new DialogInterface.OnClickListener(){
