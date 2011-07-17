@@ -32,7 +32,6 @@ public class MovieShow extends CustomWindow {
     private TextView mSynopsisText;
     private Long mRowId;
     private Cursor movie;
-    private static final String TAG = "MovieShow";
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {

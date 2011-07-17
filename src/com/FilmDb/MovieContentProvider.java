@@ -17,15 +17,11 @@ public class MovieContentProvider extends ContentProvider {
 
 	private DatabaseHelper      dbHelper;
 
-	private static String Package = "org.TVViewer";
-
 	private static final String DATABASE_NAME    = "films.sqlite";
 
 	private static final int    DATABASE_VERSION = 2;
 
 	private static final String TABLE_NAME       = "movies";
-
-	private static final String TAG              = "MovieContentProvider";
 
 	/**
 	 * Database creation sql statement

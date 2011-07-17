@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.MotionEvent;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -33,11 +32,14 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 // TODO add extra buttons to listview: delete/view + change imageview to button --> remove context menu (only buttons used)
+// TODO Maybe add support to toggle between ascending and descending
+// TODO Add activity to view by first letter of title --> with a clickable gallery or scrollview or something on top
 public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
 	private static final int SORT_ID = Menu.FIRST + 2;
 	private static final int WATCHED_ID = Menu.FIRST + 3;
+	private static final int VISIBILITY_ID = Menu.FIRST + 4;
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -51,6 +53,9 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	private ViewFlipper viewFlipper;
 	
 	private MovieAdapter movieAdapter;
+	
+	private Globals globals;
+	private int checkedVisibility = 0;
 
 	private TextView CategoryText;
 
@@ -59,7 +64,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);        
 		GeneralSettings.setApiKey("33fc4693e8d0e1e72fc38c09cc0817d3");
-
+		globals = new Globals();
 		CategoryText = (TextView)findViewById(R.id.category);
 		viewFlipper = (ViewFlipper)findViewById(R.id.flipper);
 		slideLeftIn = AnimationUtils.loadAnimation(this, R.anim.slide_left_in);
@@ -83,7 +88,10 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 		if (category == "")
 			category = "All";
 		CategoryText.setText(category + " Movies");
-		Cursor moviesCursor = fetchAllMovies();
+		Cursor moviesCursor;
+		if(checkedVisibility == 0)
+			moviesCursor = fetchAllMovies();
+		else moviesCursor = fetchAllMovies(checkedVisibility==1?true:false);
 		startManagingCursor(moviesCursor);
 		movieAdapter = 
 			new MovieAdapter(this,  moviesCursor);
@@ -99,6 +107,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, INSERT_ID, 0, R.string.menu_insert);
 		menu.add(0, SORT_ID, 0, R.string.menu_sort);
+		menu.add(0,VISIBILITY_ID,0,R.string.menu_visibility);
 		return true;
 	}
 
@@ -111,6 +120,19 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 		case SORT_ID:
 			globals.toggleSort();
 			fillData();
+			return true;
+		case VISIBILITY_ID:
+			final CharSequence[] items = {"All", "Watched", "To be watched"};
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setTitle("Pick visibility-mode");
+	        builder.setItems(items, new DialogInterface.OnClickListener(){
+	            public void onClick(DialogInterface dialogInterface, int item) {
+	            	checkedVisibility = item;
+	            	fillData();
+	                return;
+	            }
+	        });
+	        builder.create().show();
 			return true;
 		}
 

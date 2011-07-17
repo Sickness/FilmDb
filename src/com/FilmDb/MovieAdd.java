@@ -31,10 +31,7 @@ import android.content.DialogInterface;
 public class MovieAdd extends CustomWindow implements OnItemClickListener {
 
 	private String movieTitle;
-	private List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-	private String genreString = "";
-	private String posterurl = "";
-	private String trailer = null;
+	private List<Movie> movies = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,10 +47,10 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 	}
 	
 	private void fillData() {
-		List<Movie> movies = null;
 		try {
 			movies = Movie.search(movieTitle);
-
+			List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+			
 			if (!movies.isEmpty()) {
 				// Create an array to specify the fields we want to display in
 				// the list (only TITLE)
@@ -90,27 +87,44 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 		}
 	}
 
-	protected void saveMovieToDb(int iD) {
+	protected void saveMovieToDb(Movie movie) {
 		try {
-			final Movie movie = Movie.getInfo(iD);
 			final String movieName = movie.getName();
 			if (!movieExists(movieName)) {
 				
+				String genreHulpString = "";
+				String posterHulpUrl = "";
+				String trailerHulpString = null;
+				
 				for (Genre genre : movie.getGenres()) {
-					genreString += genre.getName();
-					genreString += " ";
+					genreHulpString += genre.getName();
+					genreHulpString += " ";
 				}
+			
+				final String genreString = genreHulpString;
+				genreHulpString = null;
 
 				Set<MoviePoster> poster = movie.getImages().posters;
 				Iterator<MoviePoster> iter = poster.iterator();
 				
 				if (iter.hasNext()) {
-					posterurl = iter.next().getLargestImage().toString();
+					posterHulpUrl = iter.next().getLargestImage().toString();
 				}
+				
+				final String posterurl = posterHulpUrl;
+				posterHulpUrl = null;
 
 				URL trailerurl = movie.getTrailer();
 				if (trailerurl != null)
-					trailer = trailerurl.toExternalForm();
+					trailerHulpString = trailerurl.toExternalForm();
+				
+				final String trailer = trailerHulpString;
+				trailerHulpString = null;
+				
+				final String movieYear = Integer.toString(movie
+						.getReleasedDate().getYear() + 1900);
+				
+				final String movieOverview = movie.getOverview();
 
 				AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -119,9 +133,8 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 
 				alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						createMovie(movieName, Integer.toString(movie
-								.getReleasedDate().getYear() + 1900), genreString,
-								movie.getOverview(), posterurl, trailer, true);
+						createMovie(movieName, movieYear, genreString,
+								movieOverview, posterurl, trailer, true);
 						setResult(RESULT_OK);
 						finish();
 					}
@@ -130,9 +143,8 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 				alert.setNegativeButton("No",
 						new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						createMovie(movieName, Integer.toString(movie
-								.getReleasedDate().getYear() + 1900), genreString,
-								movie.getOverview(), posterurl, trailer, false);
+						createMovie(movieName, movieYear, genreString,
+								movieOverview, posterurl, trailer, false);
 						setResult(RESULT_OK);
 						finish();
 					}
@@ -150,9 +162,11 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-		HashMap<String, String> map = list.get(position);
-		final int ID = Integer.parseInt(map.get("ID"));
-		String title = map.get("title");
+		Movie selectedMovie = null;
+		selectedMovie = movies.get(position);
+		String title = selectedMovie.getName();
+		final Movie movie = selectedMovie;
+		selectedMovie = null;
 
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -161,7 +175,7 @@ public class MovieAdd extends CustomWindow implements OnItemClickListener {
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				saveMovieToDb(ID);
+				saveMovieToDb(movie);
 			}
 		});
 

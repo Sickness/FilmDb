@@ -14,12 +14,15 @@ import android.widget.ImageView;
 public class CustomWindow extends Activity {
 	protected TextView title;
 	protected ImageView icon;
+	private Globals globals;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);     
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
     	setContentView(R.layout.movie_list);
+    	
+    	globals = new Globals();
         
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
         
@@ -84,7 +87,7 @@ public class CustomWindow extends Activity {
     	String orderBy;
     	if(globals.sortByTitle())
     		orderBy = MovieDefinitions.MovieDefinition.KEY_TITLE;
-    	else orderBy = MovieDefinitions.MovieDefinition.KEY_YEAR;
+    	else orderBy = MovieDefinitions.MovieDefinition.KEY_YEAR + " DESC";
     	
     	 String columns[] = new String[] { MovieDefinitions.MovieDefinition.KEY_ROWID, 
     			 MovieDefinitions.MovieDefinition.KEY_TITLE, MovieDefinitions.MovieDefinition.KEY_YEAR,
@@ -92,6 +95,31 @@ public class CustomWindow extends Activity {
          Uri myUri = MovieDefinitions.MovieDefinition.CONTENT_URI;
          Cursor cur = getContentResolver().query(myUri, columns, MovieDefinitions.MovieDefinition.KEY_GENRE + " like ?",
         		   new String[] {"%" + globals.getCurrentGenre() + "%"}, orderBy);
+         Log.i("Fetch Movies", Integer.toString(cur.getCount()));
+         return cur;
+    }
+    
+    /**
+     * Return a Cursor over the list of all movies in the database
+     * 
+     * @return Cursor over all movies
+     */
+    public Cursor fetchAllMovies(boolean watched) {
+    	
+    	String orderBy;
+    	if(globals.sortByTitle())
+    		orderBy = MovieDefinitions.MovieDefinition.KEY_TITLE;
+    	else orderBy = MovieDefinitions.MovieDefinition.KEY_YEAR + " DESC";
+    	
+    	int watchedMovies = watched?1:0;
+    	
+    	 String columns[] = new String[] { MovieDefinitions.MovieDefinition.KEY_ROWID, 
+    			 MovieDefinitions.MovieDefinition.KEY_TITLE, MovieDefinitions.MovieDefinition.KEY_YEAR,
+    			 MovieDefinitions.MovieDefinition.KEY_WATCHED};
+         Uri myUri = MovieDefinitions.MovieDefinition.CONTENT_URI;
+         Cursor cur = getContentResolver().query(myUri, columns, MovieDefinitions.MovieDefinition.KEY_GENRE + " like ? AND " 
+        		 + MovieDefinitions.MovieDefinition.KEY_WATCHED + "=?",
+        		   new String[] {"%" + globals.getCurrentGenre() + "%",Integer.toString(watchedMovies)}, orderBy);
          Log.i("Fetch Movies", Integer.toString(cur.getCount()));
          return cur;
     }

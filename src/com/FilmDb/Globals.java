@@ -4,7 +4,10 @@
 
 package com.FilmDb;
 
-public class globals {
+import android.app.Application;
+
+// TODO add support for watched or not-watched movies
+public class Globals extends Application {
 
 
 	private static enum GenreEnum
@@ -17,42 +20,31 @@ public class globals {
 		DRAMA,
 		COMEDY
 	}
-
-	public static final int ACTIVITY_CREATE=0;
-	public static final int ACTIVITY_SHOW=1;
+	
+	public final int ACTIVITY_CREATE=0;
+	public final int ACTIVITY_SHOW=1;
 	public static final int ACTIVITY_TRAILER=2;
 	private static boolean sortTitle = true;
 	private static boolean swipeLeft = true;
 	private static GenreEnum currentGenre = GenreEnum.ALL;
-	private static globals instance;
 
-	static {
-		instance = new globals();
-	}
-
-	private globals() {
-	}
-
-	public static globals getInstance() {
-		return globals.instance;
-	}
-
-	public static boolean sortByTitle()
+	public boolean sortByTitle()
 	{
 		return sortTitle;
 	}
 
-	public static void toggleSort()
+	public void toggleSort()
 	{
 		sortTitle = !sortTitle;
 	}
+	
 	
 	public static boolean getSwipeLeft()
 	{
 		return swipeLeft;
 	}
 
-	public static GenreEnum nextGenre()
+	public GenreEnum nextGenre()
 	{
 		swipeLeft = true;
 		switch(currentGenre)
@@ -81,7 +73,7 @@ public class globals {
 		return currentGenre;
 	}
 	
-	public static GenreEnum previousGenre()
+	public GenreEnum previousGenre()
 	{
 		swipeLeft = false;
 		switch(currentGenre)
@@ -110,7 +102,7 @@ public class globals {
 		return currentGenre;
 	}
 	
-	public static String getCurrentGenre()
+	public String getCurrentGenre()
 	{
 		switch(currentGenre)
 		{
