@@ -34,6 +34,7 @@ import android.widget.ViewFlipper;
 // TODO add extra buttons to listview: delete/view + change imageview to button --> remove context menu (only buttons used)
 // TODO Maybe add support to toggle between ascending and descending
 // TODO Add activity to view by first letter of title --> with a clickable gallery or scrollview or something on top
+// TODO download images to sd-card (movieAdd) and load from sd-card (movieShow) -- on delete: remove image from sd-card
 public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
