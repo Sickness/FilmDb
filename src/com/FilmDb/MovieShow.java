@@ -20,7 +20,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,8 +43,6 @@ public class MovieShow extends CustomWindow {
         mGenreText = (TextView) findViewById(R.id.genre);
         mSynopsisText = (TextView) findViewById(R.id.synopsis);
 
-        Button confirmButton = (Button) findViewById(R.id.done);
-
         mRowId = (savedInstanceState == null) ? null :
             (Long) savedInstanceState.getSerializable(MovieDefinitions.MovieDefinition.KEY_ROWID);
 		if (mRowId == null) {
@@ -55,15 +52,6 @@ public class MovieShow extends CustomWindow {
 		}
 
 		populateFields();
-
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                setResult(RESULT_OK);
-                finish();
-            }
-
-        });
     }
 
     private void populateFields() {
