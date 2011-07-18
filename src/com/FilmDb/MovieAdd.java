@@ -141,8 +141,8 @@ public class MovieAdd extends CustomWindow {
 				}			
 				final String genreString = genreBuilder.toString();
 				
-				//StringBuilder directorBuilder = new StringBuilder("");
-				//StringBuilder actorBuilder = new StringBuilder("");
+				StringBuilder directorBuilder = new StringBuilder("");
+				StringBuilder actorBuilder = new StringBuilder("");
 				Set<CastInfo> cast = movie.getCast();
 				Iterator<CastInfo> castIterator = cast.iterator();
 				String memberJob;
@@ -152,16 +152,22 @@ public class MovieAdd extends CustomWindow {
 					orderID = member.getOrderID();
 					if(orderID < 4 ) {	
 						memberJob = member.getJob();
-						Log.i("job", memberJob);
-						// TODO does not work yet, need to build string here with actors and directors, to be added to database
-						// TODO note that if we append this way, we have to remove the last ", " after building
-						/*if(memberJob == "Director") {
+						if(memberJob.equals("Director")) {
 							directorBuilder.append(member.getName()).append(", ");
 						}
-						if(memberJob == "Actor")
-							actorBuilder.append(member.getName()).append(", ");*/
+						if(memberJob.equals("Actor"))
+							actorBuilder.append(member.getName()).append(", ");
 					}
-				}	
+				}
+				final int directorLength = directorBuilder.length();
+				if(directorLength > 0) directorBuilder.setLength(directorLength - 2);
+				Log.i("Directors", directorBuilder.toString());
+				final String directorString = directorBuilder.toString();
+				
+				final int actorLength = actorBuilder.length();
+				if(actorLength > 0) actorBuilder.setLength(actorLength - 2);
+				Log.i("Actors", actorBuilder.toString());
+				final String actorString = actorBuilder.toString();
 
 				StringBuilder posterHulpUrl = new StringBuilder("");
 				Set<MoviePoster> poster = movie.getImages().posters;
@@ -189,7 +195,7 @@ public class MovieAdd extends CustomWindow {
 
 				alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {				
-						createMovie(ID, movieName, movieYear, genreString,
+						createMovie(ID, movieName, movieYear, directorString, actorString, genreString,
 								movieOverview, posterurl, trailer, true);
 						new FetchPosterTask().execute(posterurl,Integer.toString(ID));
 					}
@@ -198,7 +204,7 @@ public class MovieAdd extends CustomWindow {
 				alert.setNegativeButton("No",
 						new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						createMovie(ID, movieName, movieYear, genreString,
+						createMovie(ID, movieName, movieYear, directorString, actorString, genreString,
 								movieOverview, posterurl, trailer, false);
 						new FetchPosterTask().execute(posterurl,Integer.toString(ID));
 					}

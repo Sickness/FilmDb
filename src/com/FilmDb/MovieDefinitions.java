@@ -16,6 +16,8 @@ public class MovieDefinitions {
         public static final String KEY_TITLE = "title";
         public static final String KEY_YEAR = "year";
         public static final String KEY_GENRE = "genre";
+        public static final String KEY_DIRECTORS = "directors";
+        public static final String KEY_ACTORS = "actors";
         public static final String KEY_SYNOPSIS = "synopsis";
         public static final String KEY_POSTER = "posterurl";
         public static final String KEY_TRAILER = "trailerurl";

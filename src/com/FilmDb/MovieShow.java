@@ -42,6 +42,8 @@ public class MovieShow extends CustomWindow implements OnClickListener {
     private TextView mTitleText;
     private TextView mGenreText;
     private TextView mSynopsisText;
+    private TextView mDirectorsText;
+    private TextView mActorsText;
     private Button mWatched;
     private Button mDelete;
     private ImageView iv;
@@ -60,6 +62,8 @@ public class MovieShow extends CustomWindow implements OnClickListener {
         mTitleText = (TextView) findViewById(R.id.title_show);
         mGenreText = (TextView) findViewById(R.id.genre_show);
         mSynopsisText = (TextView) findViewById(R.id.synopsis_show);
+        mDirectorsText = (TextView) findViewById(R.id.directors_show);
+        mActorsText = (TextView) findViewById(R.id.actors_show);
         mWatched = (Button) findViewById(R.id.watched_show);
         mDelete = (Button) findViewById(R.id.delete_show);
 
@@ -87,6 +91,10 @@ public class MovieShow extends CustomWindow implements OnClickListener {
                     movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_GENRE)));
             mSynopsisText.setText(movie.getString(
                     movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_SYNOPSIS)));
+            mDirectorsText.setText(movie.getString(
+                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_DIRECTORS)));
+            mActorsText.setText("With: " + movie.getString(
+                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_ACTORS)));
             watched = movie.getInt(movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_WATCHED));
             mWatched.setBackgroundResource(watched==1?R.drawable.icon_green_v:R.drawable.icon_red_v);
             mWatched.setOnClickListener(this);
