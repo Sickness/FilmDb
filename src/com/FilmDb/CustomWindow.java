@@ -147,7 +147,6 @@ public class CustomWindow extends Activity {
 		Cursor cur = getContentResolver().query(myUri, columns, MovieDefinitions.MovieDefinition.KEY_GENRE + " like ? AND " 
 				+ MovieDefinitions.MovieDefinition.KEY_WATCHED + "=?",
 				new String[] {"%" + globals.getCurrentGenre() + "%",Integer.toString(watched)}, orderBy);
-		Log.i("Fetch Movies", Integer.toString(cur.getCount()));
 		return cur;
 	}
 

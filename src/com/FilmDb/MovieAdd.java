@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import net.sf.jtmdb.CastInfo;
 import net.sf.jtmdb.Genre;
 import net.sf.jtmdb.Movie;
 import net.sf.jtmdb.MoviePoster;
@@ -139,6 +140,28 @@ public class MovieAdd extends CustomWindow {
 						genreBuilder.append(" - ");
 				}			
 				final String genreString = genreBuilder.toString();
+				
+				//StringBuilder directorBuilder = new StringBuilder("");
+				//StringBuilder actorBuilder = new StringBuilder("");
+				Set<CastInfo> cast = movie.getCast();
+				Iterator<CastInfo> castIterator = cast.iterator();
+				String memberJob;
+				int orderID;
+				while(castIterator.hasNext()) {
+					CastInfo member = castIterator.next();
+					orderID = member.getOrderID();
+					if(orderID < 4 ) {	
+						memberJob = member.getJob();
+						Log.i("job", memberJob);
+						// TODO does not work yet, need to build string here with actors and directors, to be added to database
+						// TODO note that if we append this way, we have to remove the last ", " after building
+						/*if(memberJob == "Director") {
+							directorBuilder.append(member.getName()).append(", ");
+						}
+						if(memberJob == "Actor")
+							actorBuilder.append(member.getName()).append(", ");*/
+					}
+				}	
 
 				StringBuilder posterHulpUrl = new StringBuilder("");
 				Set<MoviePoster> poster = movie.getImages().posters;
@@ -205,12 +228,10 @@ public class MovieAdd extends CustomWindow {
 
 			String path = extendedFilepath + imageName + ".png";
 
-			Log.i("MovieAdd", path);
-
 			FileOutputStream fos = null;
 			fos = new FileOutputStream(path); 
 
-			Log.i("MovieAdd",Boolean.toString(bm.compress(CompressFormat.PNG, 100, fos)));   
+			bm.compress(CompressFormat.PNG, 100, fos);
 			fos.flush();
 			fos.close();             
 		} catch (IOException e) {}

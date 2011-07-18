@@ -31,6 +31,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+// TODO  Add Actors and Directors to Database and display in MovieShow
 // TODO Maybe add support to toggle between ascending and descending
 // TODO Add activity to view by first letter of title --> with a clickable gallery or scrollview or something on top
 // TODO download images to sd-card (movieAdd) and load from sd-card (movieShow) -- on delete: remove image from sd-card
