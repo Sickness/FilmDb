@@ -187,6 +187,8 @@ public class MovieAdd extends CustomWindow {
 						.getReleasedDate().getYear() + 1900);
 
 				final String movieOverview = movie.getOverview();
+				
+				final int movieRuntime = movie.getRuntime();
 
 				AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -195,7 +197,7 @@ public class MovieAdd extends CustomWindow {
 
 				alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {				
-						createMovie(ID, movieName, movieYear, directorString, actorString, genreString,
+						createMovie(ID, movieName, movieYear, movieRuntime, directorString, actorString, genreString,
 								movieOverview, posterurl, trailer, true);
 						new FetchPosterTask().execute(posterurl,Integer.toString(ID));
 					}
@@ -204,7 +206,7 @@ public class MovieAdd extends CustomWindow {
 				alert.setNegativeButton("No",
 						new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						createMovie(ID, movieName, movieYear, directorString, actorString, genreString,
+						createMovie(ID, movieName, movieYear, movieRuntime, directorString, actorString, genreString,
 								movieOverview, posterurl, trailer, false);
 						new FetchPosterTask().execute(posterurl,Integer.toString(ID));
 					}

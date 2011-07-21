@@ -20,7 +20,9 @@ public class Globals extends Application {
 		DRAMA,
 		COMEDY
 	}
-	
+
+	public final CharSequence[] genreItems = {"All", "Action", "Thriller", "Horror", "Romance", "Drama", "Comedy"};
+
 	public final int ACTIVITY_CREATE=0;
 	public final int ACTIVITY_SHOW=1;
 	public static final int ACTIVITY_TRAILER=2;
@@ -37,8 +39,8 @@ public class Globals extends Application {
 	{
 		sortTitle = !sortTitle;
 	}
-	
-	
+
+
 	public static boolean getSwipeLeft()
 	{
 		return swipeLeft;
@@ -72,7 +74,7 @@ public class Globals extends Application {
 		}
 		return currentGenre;
 	}
-	
+
 	public GenreEnum previousGenre()
 	{
 		swipeLeft = false;
@@ -101,7 +103,38 @@ public class Globals extends Application {
 		}
 		return currentGenre;
 	}
-	
+
+	public void setGenre(int genre)
+	{
+		switch(genre)
+		{
+		case 0:
+			currentGenre = GenreEnum.ALL;
+			return;
+		case 1:
+			currentGenre = GenreEnum.ACTION;
+			return;
+		case 2:
+			currentGenre = GenreEnum.THRILLER;
+			return;
+		case 3:
+			currentGenre = GenreEnum.HORROR;
+			return;
+		case 4:
+			currentGenre = GenreEnum.ROMANCE;
+			return;
+		case 5:
+			currentGenre = GenreEnum.DRAMA;
+			return;
+		case 6:
+			currentGenre = GenreEnum.COMEDY;
+			return;
+		default:
+			return;
+
+		}
+	}
+
 	public String getCurrentGenre()
 	{
 		switch(currentGenre)

@@ -43,6 +43,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	private static final int WATCHED_ID = Menu.FIRST + 3;
 	private static final int VISIBILITY_ID = Menu.FIRST + 4;
 	private static final int DELETE_ALL_ID = Menu.FIRST + 5;
+	private static final int CATEGORY_ID = Menu.FIRST + 6;
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -106,6 +107,7 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
+		menu.add(0, CATEGORY_ID, 0, R.string.menu_category);
 		menu.add(0, INSERT_ID, 0, R.string.menu_insert);
 		menu.add(0,DELETE_ALL_ID,0,R.string.menu_delete_all);
 		menu.add(0, SORT_ID, 0, R.string.menu_sort);
@@ -116,6 +118,18 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch(item.getItemId()) {
+		case CATEGORY_ID:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Pick category");
+			builder.setItems(globals.genreItems, new DialogInterface.OnClickListener(){
+				public void onClick(DialogInterface dialogInterface, int item) {
+					globals.setGenre(item);
+					fillData();
+					return;
+				}
+			});
+			builder.create().show();
+			return true;
 		case INSERT_ID:
 			createMovie();
 			return true;
@@ -124,10 +138,10 @@ public class MovieDbv extends CustomWindow implements OnItemClickListener {
 			fillData();
 			return true;
 		case VISIBILITY_ID:
-			final CharSequence[] items = {"All", "To be watched", "Watched"};
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			final CharSequence[] visibility_items = {"All", "To be watched", "Watched"};
+			builder = new AlertDialog.Builder(this);
 			builder.setTitle("Pick visibility-mode");
-			builder.setItems(items, new DialogInterface.OnClickListener(){
+			builder.setItems(visibility_items, new DialogInterface.OnClickListener(){
 				public void onClick(DialogInterface dialogInterface, int item) {
 					checkedVisibility = item;
 					fillData();

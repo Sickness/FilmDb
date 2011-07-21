@@ -15,6 +15,7 @@ public class MovieDefinitions {
         // Table columns
         public static final String KEY_TITLE = "title";
         public static final String KEY_YEAR = "year";
+        public static final String KEY_RUNTIME = "runtime";
         public static final String KEY_GENRE = "genre";
         public static final String KEY_DIRECTORS = "directors";
         public static final String KEY_ACTORS = "actors";

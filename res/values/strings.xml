@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FilmDb v0.1</string>
+    <string name="app_name">FilmDb v1.3</string>
     <string name="no_movies">No Movies Yet</string>
     <string name="menu_insert">Add Movie</string>
     <string name="menu_delete">Delete Movie</string>
@@ -8,6 +8,7 @@
     <string name="menu_sort">Sort by Title/Year</string>
     <string name="menu_watched">Watched/Not watched</string>
     <string name="menu_visibility">Toggle Visibility</string>
+    <string name="menu_category">Jump to Category</string>
     <string name="title">Title</string>
     <string name="genre">Genre</string>
     <string name="synopsis">Synopsis</string>

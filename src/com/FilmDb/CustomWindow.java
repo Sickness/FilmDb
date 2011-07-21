@@ -36,7 +36,6 @@ public class CustomWindow extends Activity {
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
 
 		title = (TextView) findViewById(R.id.title);
-		icon  = (ImageView) findViewById(R.id.icon);
 	}
 
 	/**
@@ -49,11 +48,12 @@ public class CustomWindow extends Activity {
 	 * @param synopsis the synopsis of the movie
 	 * @return rowId or -1 if failed
 	 */
-	public void createMovie(int movieId, String title, String year, String directors, String actors, String genre, String synopsis, String posterurl, String trailerurl, boolean watched) {
+	public void createMovie(int movieId, String title, String year, int runtime, String directors, String actors, String genre, String synopsis, String posterurl, String trailerurl, boolean watched) {
 		ContentValues initialValues = new ContentValues();   
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_MOVIEID,movieId);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_TITLE, title);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_YEAR, year);
+		initialValues.put(MovieDefinitions.MovieDefinition.KEY_RUNTIME, runtime);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_DIRECTORS, directors);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_ACTORS, actors);
 		initialValues.put(MovieDefinitions.MovieDefinition.KEY_GENRE, genre);
@@ -164,6 +164,7 @@ public class CustomWindow extends Activity {
 		String columns[] = new String[] { MovieDefinitions.MovieDefinition.KEY_ROWID, 
 				MovieDefinitions.MovieDefinition.KEY_MOVIEID,
 				MovieDefinitions.MovieDefinition.KEY_TITLE, MovieDefinitions.MovieDefinition.KEY_YEAR,
+				MovieDefinitions.MovieDefinition.KEY_RUNTIME,
 				MovieDefinitions.MovieDefinition.KEY_DIRECTORS, MovieDefinitions.MovieDefinition.KEY_ACTORS,
 				MovieDefinitions.MovieDefinition.KEY_GENRE, MovieDefinitions.MovieDefinition.KEY_SYNOPSIS,
 				MovieDefinitions.MovieDefinition.KEY_POSTER, MovieDefinitions.MovieDefinition.KEY_TRAILER,

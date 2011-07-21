@@ -19,7 +19,7 @@ public class MovieContentProvider extends ContentProvider {
 
 	private static final String DATABASE_NAME    = "films.sqlite";
 
-	private static final int    DATABASE_VERSION = 7;
+	private static final int    DATABASE_VERSION = 8;
 
 	private static final String TABLE_NAME       = "movies";
 
@@ -30,7 +30,8 @@ public class MovieContentProvider extends ContentProvider {
 		"CREATE TABLE " + TABLE_NAME + " (" + MovieDefinitions.MovieDefinition.KEY_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 		+ MovieDefinitions.MovieDefinition.KEY_MOVIEID + " INTEGER NOT NULL, " 
 		+ MovieDefinitions.MovieDefinition.KEY_TITLE + " TEXT NOT NULL, " + MovieDefinitions.MovieDefinition.KEY_YEAR + " TEXT NOT NULL, "
-		+ MovieDefinitions.MovieDefinition.KEY_DIRECTORS + " TEXT, "+ MovieDefinitions.MovieDefinition.KEY_ACTORS + " TEXT, "
+		+ MovieDefinitions.MovieDefinition.KEY_DIRECTORS + " TEXT, " + MovieDefinitions.MovieDefinition.KEY_RUNTIME + " INTEGER, "
+		+ MovieDefinitions.MovieDefinition.KEY_ACTORS + " TEXT, "
 		+ MovieDefinitions.MovieDefinition.KEY_GENRE + " TEXT, " + MovieDefinitions.MovieDefinition.KEY_SYNOPSIS + " TEXT, " 
 		+ MovieDefinitions.MovieDefinition.KEY_POSTER + " TEXT, " + MovieDefinitions.MovieDefinition.KEY_TRAILER + " TEXT, "
 		+ MovieDefinitions.MovieDefinition.KEY_WATCHED + " BOOLEAN" + ");";

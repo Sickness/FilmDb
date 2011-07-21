@@ -86,7 +86,9 @@ public class MovieShow extends CustomWindow implements OnClickListener {
             movie = fetchMovie(mRowId);
             startManagingCursor(movie);
             mTitleText.setText(movie.getString(
-                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_TITLE)));
+                    movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_TITLE)) + " - " +
+                    movie.getString(
+                            movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_RUNTIME)) + "min");
             mGenreText.setText(movie.getString(
                     movie.getColumnIndexOrThrow(MovieDefinitions.MovieDefinition.KEY_GENRE)));
             mSynopsisText.setText(movie.getString(
